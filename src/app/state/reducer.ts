@@ -1,25 +1,67 @@
-import { ActionReducer, Action } from '@ngrx/store';
-import { ReducerAction } from '../models/action';
+import * as gameActions from './actions';
+import { Question, QuestionAnswer } from '../models/models';
 
-// Actions
-export const UPDATE_LETTER = 'UPDATE_LETTER';
+/**
+ * Overall state of @ngrx/store
+ */
+export interface StoreState {
+  isGameOn: boolean;
+  gameStartedOn: Date|null;
+  lastQuestion: Question|null;
+  gameHistory: QuestionAnswer[];
+}
 
-// Action Creators
-const createUpdateLetterAction = () => {
-  return {
-    type: UPDATE_LETTER
-  };
+/**
+ * Initial/default state of the store
+ */
+export const initialState: StoreState = {
+  isGameOn: false,
+  gameStartedOn: null,
+  lastQuestion: null,
+  gameHistory: [],
 };
 
-const initialState = {
-  letter: 'A',
-  answeredQuestions: []
-};
-
-export function reducer(state: initialState, action: ReducerAction) {
+/**
+ * Game reducer
+ */
+export function gameReducer(state: StoreState, action: gameActions.Actions): StoreState {
   switch (action.type) {
-    case UPDATE_LETTER:
-      return action.letter;
+    case gameActions.ActionTypes.GAME_START:
+      // Make sure all relevant fields are re-set on game start.
+      return Object.assign({}, state, {
+        isGameOn: true,
+        gameStartedOn: new Date(),
+        lastQuestion: null,
+        gameHistory: [],
+      });
+
+    case gameActions.ActionTypes.GAME_OVER:
+      if (!state.isGameOn) {
+        return state;
+      }
+
+      return Object.assign({}, state, {
+        isGameOn: false,
+        lastQuestion: null,
+      });
+
+    case gameActions.ActionTypes.NEW_QUESTION:
+      if (!state.isGameOn) {
+        return state;
+      }
+
+      return Object.assign({}, state, {
+        lastQuestion: (action as gameActions.NewQuestionAction).payload,
+      });
+
+    case gameActions.ActionTypes.QUESTION_ANSWER:
+      if (!state.isGameOn) {
+        return state;
+      }
+
+      return Object.assign({}, state, {
+        gameHistory: [...state.gameHistory, (action as gameActions.QuestionAnswerAction).payload]
+      });
 
     default:
       return state;
