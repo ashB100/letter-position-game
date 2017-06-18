@@ -7,7 +7,7 @@ export class LetterPositionPage {
     return browser.get('/');
   }
 
-  public getParagraphText(): webdriver.promise.Promise<string> {
+  public getHeadlineText(): webdriver.promise.Promise<string> {
     return element(by.css('app-root h1')).getText();
   }
 }

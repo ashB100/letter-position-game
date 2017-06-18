@@ -1,0 +1,23 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/letter-position-game
+    docker:
+      - image: circleci/node:6-browsers
+    steps:
+      - checkout
+      - run:
+          name: Install Dependencies
+          command: yarn
+      - run:
+          name: linting
+          command: yarn lint
+      - run:
+          name: testing
+          command: yarn test:ci
+      - run:
+          name: building
+          command: yarn build
+      - run:
+          name: end to end testing
+          command: yarn e2e

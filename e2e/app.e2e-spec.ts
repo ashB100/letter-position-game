@@ -9,8 +9,8 @@ describe('letter-position App', () => {
 
   it('should display welcome message', done => {
     page.navigateTo();
-    page.getParagraphText()
-      .then(msg => expect(msg).toEqual('Welcome to app!!'))
+    page.getHeadlineText()
+      .then(msg => expect(msg).toEqual('Letter Position Game'))
       .then(done, done.fail);
   });
 });
